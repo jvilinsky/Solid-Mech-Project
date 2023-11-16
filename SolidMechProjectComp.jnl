@@ -1,0 +1,258 @@
+# -*- coding: mbcs -*-
+from part import *
+from material import *
+from section import *
+from assembly import *
+from step import *
+from interaction import *
+from load import *
+from mesh import *
+from optimization import *
+from job import *
+from sketch import *
+from visualization import *
+from connectorBehavior import *
+mdb.models['Model-1'].ConstrainedSketch(name='__profile__', sheetSize=200.0)
+mdb.models['Model-1'].sketches['__profile__'].CircleByCenterPerimeter(center=(
+    0.0, 0.0), point1=(0.0, 100.0))
+mdb.models['Model-1'].Part(dimensionality=THREE_D, name='Shell', type=
+    DEFORMABLE_BODY)
+mdb.models['Model-1'].parts['Shell'].BaseShellExtrude(depth=20.0, sketch=
+    mdb.models['Model-1'].sketches['__profile__'])
+del mdb.models['Model-1'].sketches['__profile__']
+mdb.models['Model-1'].parts['Shell'].features['Shell extrude-1'].setValues(
+    depth=1000.0)
+mdb.models['Model-1'].parts['Shell'].regenerate()
+mdb.models['Model-1'].parts['Shell'].regenerate()
+mdb.models['Model-1'].parts['Shell'].regenerate()
+mdb.models['Model-1'].Material(name='Composite')
+mdb.models['Model-1'].materials['Composite'].Elastic(table=((142200000000.0, 
+    9200000000.0, 9200000000.0, 0.33, 0.33, 0.4, 4800000000.0, 4800000000.0, 
+    1200000000.0), ), type=ENGINEERING_CONSTANTS)
+mdb.models['Model-1'].parts['Shell'].Surface(name='Surf-1', side1Faces=
+    mdb.models['Model-1'].parts['Shell'].faces.getSequenceFromMask(('[#1 ]', ), 
+    ))
+mdb.models['Model-1'].parts['Shell'].Set(edges=
+    mdb.models['Model-1'].parts['Shell'].edges.getSequenceFromMask(('[#1 ]', ), 
+    ), name='Set-1')
+mdb.models['Model-1'].parts['Shell'].CompositeLayup(description='', 
+    elementType=SHELL, name='CompositeLayup-1', offsetType=MIDDLE_SURFACE, 
+    symmetric=True, thicknessAssignment=FROM_SECTION)
+mdb.models['Model-1'].parts['Shell'].compositeLayups['CompositeLayup-1'].Section(
+    integrationRule=SIMPSON, poissonDefinition=DEFAULT, preIntegrate=OFF, 
+    temperature=GRADIENT, thicknessType=UNIFORM, useDensity=OFF)
+mdb.models['Model-1'].parts['Shell'].compositeLayups['CompositeLayup-1'].suppress(
+    )
+mdb.models['Model-1'].parts['Shell'].compositeLayups['CompositeLayup-1'].CompositePly(
+    additionalRotationField='', additionalRotationType=ROTATION_NONE, angle=0.0
+    , axis=AXIS_3, material='Composite', numIntPoints=3, orientationType=
+    SPECIFY_ORIENT, orientationValue=0.0, plyName='Ply-1', region=Region(
+    faces=mdb.models['Model-1'].parts['Shell'].faces.getSequenceFromMask(mask=(
+    '[#1 ]', ), )), suppressed=False, thickness=0.005, thicknessType=
+    SPECIFY_THICKNESS)
+mdb.models['Model-1'].parts['Shell'].compositeLayups['CompositeLayup-1'].CompositePly(
+    additionalRotationField='', additionalRotationType=ROTATION_NONE, angle=0.0
+    , axis=AXIS_3, material='Composite', numIntPoints=3, orientationType=
+    SPECIFY_ORIENT, orientationValue=45.0, plyName='Ply-2', region=Region(
+    faces=mdb.models['Model-1'].parts['Shell'].faces.getSequenceFromMask(mask=(
+    '[#1 ]', ), )), suppressed=False, thickness=0.005, thicknessType=
+    SPECIFY_THICKNESS)
+mdb.models['Model-1'].parts['Shell'].compositeLayups['CompositeLayup-1'].CompositePly(
+    additionalRotationField='', additionalRotationType=ROTATION_NONE, angle=0.0
+    , axis=AXIS_3, material='Composite', numIntPoints=3, orientationType=
+    SPECIFY_ORIENT, orientationValue=-45.0, plyName='Ply-3', region=Region(
+    faces=mdb.models['Model-1'].parts['Shell'].faces.getSequenceFromMask(mask=(
+    '[#1 ]', ), )), suppressed=False, thickness=0.005, thicknessType=
+    SPECIFY_THICKNESS)
+mdb.models['Model-1'].parts['Shell'].compositeLayups['CompositeLayup-1'].resume(
+    )
+mdb.models['Model-1'].parts['Shell'].compositeLayups['CompositeLayup-1'].ReferenceOrientation(
+    additionalRotationField='', additionalRotationType=ROTATION_NONE, angle=0.0
+    , axis=AXIS_3, flipNormalDirection=False, flipPrimaryDirection=False, 
+    localCsys=None, normalAxisDefinition=SURFACE, normalAxisDirection=AXIS_3, 
+    normalAxisRegion=mdb.models['Model-1'].parts['Shell'].surfaces['Surf-1'], 
+    orientationType=DISCRETE, primaryAxisDefinition=EDGE, primaryAxisDirection=
+    AXIS_1, primaryAxisRegion=
+    mdb.models['Model-1'].parts['Shell'].sets['Set-1'], stackDirection=STACK_3)
+mdb.models['Model-1'].parts['Shell'].seedPart(deviationFactor=0.1, 
+    minSizeFactor=0.1, size=20.0)
+mdb.models['Model-1'].parts['Shell'].generateMesh()
+from part import *
+from material import *
+from section import *
+from assembly import *
+from step import *
+from interaction import *
+from load import *
+from mesh import *
+from optimization import *
+from job import *
+from sketch import *
+from visualization import *
+from connectorBehavior import *
+mdb.models['Model-1'].rootAssembly.DatumCsysByDefault(CARTESIAN)
+mdb.models['Model-1'].rootAssembly.Instance(dependent=ON, name='Shell-1', part=
+    mdb.models['Model-1'].parts['Shell'])
+mdb.models['Model-1'].StaticStep(name='Step-1', previous='Initial')
+mdb.models['Model-1'].FieldOutputRequest(createStepName='Step-1', 
+    layupLocationMethod=SPECIFIED, layupNames=('Shell-1.CompositeLayup-1', ), 
+    name='F-Output-2', outputAtPlyBottom=False, outputAtPlyMid=True, 
+    outputAtPlyTop=False, rebar=EXCLUDE, variables=('S', 'E'))
+mdb.models['Model-1'].rootAssembly.Surface(name='Surf-1', side1Edges=
+    mdb.models['Model-1'].rootAssembly.instances['Shell-1'].edges.getSequenceFromMask(
+    ('[#1 ]', ), ))
+mdb.models['Model-1'].ShellEdgeLoad(createStepName='Step-1', distributionType=
+    UNIFORM, field='', localCsys=None, magnitude=1000.0, name='Load-1', region=
+    mdb.models['Model-1'].rootAssembly.surfaces['Surf-1'])
+mdb.models['Model-1'].rootAssembly.Set(edges=
+    mdb.models['Model-1'].rootAssembly.instances['Shell-1'].edges.getSequenceFromMask(
+    ('[#2 ]', ), ), name='Set-1')
+mdb.models['Model-1'].DisplacementBC(amplitude=UNSET, createStepName='Step-1', 
+    distributionType=UNIFORM, fieldName='', fixed=OFF, localCsys=None, name=
+    'BC-1', region=mdb.models['Model-1'].rootAssembly.sets['Set-1'], u1=0.0, 
+    u2=0.0, u3=0.0, ur1=0.0, ur2=0.0, ur3=0.0)
+mdb.models['Model-1'].rootAssembly.Set(edges=
+    mdb.models['Model-1'].rootAssembly.instances['Shell-1'].edges.getSequenceFromMask(
+    ('[#1 ]', ), ), name='Set-2')
+mdb.models['Model-1'].DisplacementBC(amplitude=UNSET, createStepName='Step-1', 
+    distributionType=UNIFORM, fieldName='', fixed=OFF, localCsys=None, name=
+    'BC-2', region=mdb.models['Model-1'].rootAssembly.sets['Set-2'], u1=0.0, 
+    u2=0.0, u3=UNSET, ur1=0.0, ur2=0.0, ur3=0.0)
+mdb.Job(atTime=None, contactPrint=OFF, description='', echoPrint=OFF, 
+    explicitPrecision=SINGLE, getMemoryFromAnalysis=True, historyPrint=OFF, 
+    memory=90, memoryUnits=PERCENTAGE, model='Model-1', modelPrint=OFF, 
+    multiprocessingMode=DEFAULT, name='Compression', nodalOutputPrecision=
+    SINGLE, numCpus=1, numGPUs=0, numThreadsPerMpiProcess=1, queue=None, 
+    resultsFormat=ODB, scratch='', type=ANALYSIS, userSubroutine='', waitHours=
+    0, waitMinutes=0)
+mdb.jobs['Compression'].submit(consistencyChecking=OFF)
+mdb.jobs['Compression']._Message(STARTED, {'phase': BATCHPRE_PHASE, 
+    'clientHost': '550-0306', 'handle': 0, 'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(ODB_FILE, {'phase': BATCHPRE_PHASE, 
+    'file': 'C:\\temp\\Compression.odb', 'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(COMPLETED, {'phase': BATCHPRE_PHASE, 
+    'message': 'Analysis phase complete', 'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(STARTED, {'phase': STANDARD_PHASE, 
+    'clientHost': '550-0306', 'handle': 15476, 'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(STEP, {'phase': STANDARD_PHASE, 'stepId': 1, 
+    'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(ODB_FRAME, {'phase': STANDARD_PHASE, 
+    'step': 0, 'frame': 0, 'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(MEMORY_ESTIMATE, {'phase': STANDARD_PHASE, 
+    'jobName': 'Compression', 'memory': 51.0})
+mdb.jobs['Compression']._Message(PHYSICAL_MEMORY, {'phase': STANDARD_PHASE, 
+    'physical_memory': 32457.0, 'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(MINIMUM_MEMORY, {'minimum_memory': 22.0, 
+    'phase': STANDARD_PHASE, 'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(ODB_FRAME, {'phase': STANDARD_PHASE, 
+    'step': 0, 'frame': 1, 'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(STATUS, {'totalTime': 1.0, 'attempts': 1, 
+    'timeIncrement': 1.0, 'increment': 1, 'stepTime': 1.0, 'step': 1, 
+    'jobName': 'Compression', 'severe': 0, 'iterations': 1, 
+    'phase': STANDARD_PHASE, 'equilibrium': 1})
+mdb.jobs['Compression']._Message(END_STEP, {'phase': STANDARD_PHASE, 
+    'stepId': 1, 'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(COMPLETED, {'phase': STANDARD_PHASE, 
+    'message': 'Analysis phase complete', 'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(JOB_COMPLETED, {
+    'time': 'Thu Oct 19 07:16:18 2023', 'jobName': 'Compression'})
+# Save by frisbyce on 2023_10_19-07.20.09; build 2023 2022_09_28-14.11.55 183150
+from part import *
+from material import *
+from section import *
+from assembly import *
+from step import *
+from interaction import *
+from load import *
+from mesh import *
+from optimization import *
+from job import *
+from sketch import *
+from visualization import *
+from connectorBehavior import *
+mdb.models['Model-1'].HomogeneousShellSection(idealization=NO_IDEALIZATION, 
+    integrationRule=SIMPSON, material='Composite', name='Section-1', 
+    nodalThicknessField='', numIntPts=5, poissonDefinition=DEFAULT, 
+    preIntegrate=OFF, temperature=GRADIENT, thickness=30.0, thicknessField='', 
+    thicknessModulus=None, thicknessType=UNIFORM, useDensity=OFF)
+# Save by vilinsjf on 2023_11_16-13.13.26; build 2023 2022_09_28-14.11.55 183150
+from part import *
+from material import *
+from section import *
+from assembly import *
+from step import *
+from interaction import *
+from load import *
+from mesh import *
+from optimization import *
+from job import *
+from sketch import *
+from visualization import *
+from connectorBehavior import *
+mdb.models['Model-1'].loads['Load-1'].setValues(traction=SHEAR)
+mdb.jobs['Compression'].submit(consistencyChecking=OFF)
+mdb.jobs['Compression']._Message(STARTED, {'phase': BATCHPRE_PHASE, 
+    'clientHost': '617-0214', 'handle': 0, 'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(ODB_FILE, {'phase': BATCHPRE_PHASE, 
+    'file': 'C:\\temp\\Compression.odb', 'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(COMPLETED, {'phase': BATCHPRE_PHASE, 
+    'message': 'Analysis phase complete', 'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(STARTED, {'phase': STANDARD_PHASE, 
+    'clientHost': '617-0214', 'handle': 44432, 'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(STEP, {'phase': STANDARD_PHASE, 'stepId': 1, 
+    'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(ODB_FRAME, {'phase': STANDARD_PHASE, 
+    'step': 0, 'frame': 0, 'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(MEMORY_ESTIMATE, {'phase': STANDARD_PHASE, 
+    'jobName': 'Compression', 'memory': 51.0})
+mdb.jobs['Compression']._Message(PHYSICAL_MEMORY, {'phase': STANDARD_PHASE, 
+    'physical_memory': 32494.0, 'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(MINIMUM_MEMORY, {'minimum_memory': 22.0, 
+    'phase': STANDARD_PHASE, 'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(ODB_FRAME, {'phase': STANDARD_PHASE, 
+    'step': 0, 'frame': 1, 'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(STATUS, {'totalTime': 1.0, 'attempts': 1, 
+    'timeIncrement': 1.0, 'increment': 1, 'stepTime': 1.0, 'step': 1, 
+    'jobName': 'Compression', 'severe': 0, 'iterations': 1, 
+    'phase': STANDARD_PHASE, 'equilibrium': 1})
+mdb.jobs['Compression']._Message(END_STEP, {'phase': STANDARD_PHASE, 
+    'stepId': 1, 'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(COMPLETED, {'phase': STANDARD_PHASE, 
+    'message': 'Analysis phase complete', 'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(JOB_COMPLETED, {
+    'time': 'Thu Nov 16 14:02:31 2023', 'jobName': 'Compression'})
+mdb.models['Model-1'].loads['Load-1'].setValues(traction=NORMAL)
+mdb.models['Model-1'].loads['Load-1'].setValues(directionVector=((0.0, 0.0, 
+    0.0), (0.0, -1.0, 0.0)), traction=GENERAL)
+mdb.jobs['Compression'].submit(consistencyChecking=OFF)
+mdb.jobs['Compression']._Message(STARTED, {'phase': BATCHPRE_PHASE, 
+    'clientHost': '617-0214', 'handle': 0, 'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(ODB_FILE, {'phase': BATCHPRE_PHASE, 
+    'file': 'C:\\temp\\Compression.odb', 'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(COMPLETED, {'phase': BATCHPRE_PHASE, 
+    'message': 'Analysis phase complete', 'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(STARTED, {'phase': STANDARD_PHASE, 
+    'clientHost': '617-0214', 'handle': 21828, 'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(STEP, {'phase': STANDARD_PHASE, 'stepId': 1, 
+    'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(ODB_FRAME, {'phase': STANDARD_PHASE, 
+    'step': 0, 'frame': 0, 'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(MEMORY_ESTIMATE, {'phase': STANDARD_PHASE, 
+    'jobName': 'Compression', 'memory': 51.0})
+mdb.jobs['Compression']._Message(PHYSICAL_MEMORY, {'phase': STANDARD_PHASE, 
+    'physical_memory': 32494.0, 'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(MINIMUM_MEMORY, {'minimum_memory': 22.0, 
+    'phase': STANDARD_PHASE, 'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(ODB_FRAME, {'phase': STANDARD_PHASE, 
+    'step': 0, 'frame': 1, 'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(STATUS, {'totalTime': 1.0, 'attempts': 1, 
+    'timeIncrement': 1.0, 'increment': 1, 'stepTime': 1.0, 'step': 1, 
+    'jobName': 'Compression', 'severe': 0, 'iterations': 1, 
+    'phase': STANDARD_PHASE, 'equilibrium': 1})
+mdb.jobs['Compression']._Message(END_STEP, {'phase': STANDARD_PHASE, 
+    'stepId': 1, 'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(COMPLETED, {'phase': STANDARD_PHASE, 
+    'message': 'Analysis phase complete', 'jobName': 'Compression'})
+mdb.jobs['Compression']._Message(JOB_COMPLETED, {
+    'time': 'Thu Nov 16 14:14:12 2023', 'jobName': 'Compression'})
+# Save by vilinsjf on 2023_11_16-14.17.16; build 2023 2022_09_28-14.11.55 183150
